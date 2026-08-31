@@ -1,0 +1,13 @@
+name: 3duse
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python=3.11.11
+  - pip
+  - numpy=1.26
+  - pytorch=2.5.1
+  - torchvision=0.20.1
+  - pytorch-cuda=12.4

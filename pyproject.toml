@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "3d-use"
+version = "0.1.0"
+description = "3D-USE: medium-aware reconstruction and scene-level underwater enhancement"
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+license = {file = "LICENSE"}
+authors = [{name = "3D-USE Authors"}]
+dependencies = [
+  "gsplat==1.5.3",
+  "numpy>=1.24,<2",
+  "pytorch-msssim>=1.0.0",
+  "scikit-learn>=1.3",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8",
+]
+
+[project.entry-points.'nerfstudio.method_configs']
+3duse-stage1 = "threeduse.config:stage1"
+3duse-stage2 = "threeduse.config:stage2"
+
+[tool.setuptools.packages.find]
+include = ["threeduse*"]
+
+[tool.setuptools.package-data]
+threeduse = [
+  "cuda/csrc/**/*",
+  "cuda/include/**/*",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
