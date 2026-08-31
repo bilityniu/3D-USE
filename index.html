@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="3D-USE learns a persistent visibility-enhanced underwater Gaussian scene for consistent novel-view rendering.">
+    <meta property="og:title" content="3D-USE: From Image-Level to Scene-Level Underwater Enhancement">
+    <meta property="og:description" content="Learning a persistent, visibility-enhanced underwater Gaussian scene for consistent novel-view rendering.">
+    <meta property="og:image" content="media/figures/teaser.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>3D-USE: From Image-Level to Scene-Level Underwater Enhancement</title>
+    <link rel="icon" href="media/figures/logo.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="static/css/style.css?v=24">
+  </head>
+  <body>
+    <nav class="site-nav" aria-label="Primary navigation">
+      <div class="nav-inner">
+        <a class="brand" href="#top" aria-label="3D-USE home">
+          <img class="brand-logo" src="media/figures/logo.png" alt=""><span>3D-USE</span>
+        </a>
+        <div class="nav-links">
+          <a href="#motivation">Motivation</a>
+          <a href="#overview">Overview</a>
+          <a href="#method">Method</a>
+          <a href="#results">Results</a>
+          <a href="#citation">Citation</a>
+        </div>
+      </div>
+    </nav>
+
+    <main>
+      <section class="hero" id="top">
+        <div class="hero-glow hero-glow-one"></div>
+        <div class="hero-glow hero-glow-two"></div>
+        <div class="page-shell hero-inner">
+          <div class="hero-title">
+            <h1><span class="title-prefix"><img src="media/figures/logo.png" alt="3D-USE logo"><span>3D-USE</span></span>: From <span class="title-domain title-domain-2d">Image-Level</span> to <span class="title-domain title-domain-3d">Scene-Level</span> Underwater Enhancement</h1>
+          </div>
+
+
+          <div class="author-block">
+            <div class="author-names">
+              <a href="https://jieyu-yuan.github.io/" target="_blank" rel="noopener">Jieyu Yuan<sup>1</sup></a>
+              <a href="https://c-pupil.github.io/" target="_blank" rel="noopener">Yuanlin Zhang<sup>1</sup></a>
+              <a href="https://github.com/JoongLeo" target="_blank" rel="noopener">Jihong Li<sup>1</sup></a>
+              <a href="https://guochunle-zero.github.io/" target="_blank" rel="noopener">Chunle Guo<sup>1,2</sup></a>
+              <a href="https://scholar.google.com.hk/citations?user=IuME_8AAAAAJ&amp;hl=en" target="_blank" rel="noopener">Huimin Lu<sup>3,4</sup></a>
+              <a href="https://li-chongyi.github.io/" target="_blank" rel="noopener">Chongyi Li<sup>1,2,*</sup></a>
+            </div>
+            <div class="author-affiliations">
+              <div class="affiliation-row">
+                <span><sup>1</sup>College of Computer Science, Nankai University</span>
+                <span><sup>2</sup>NKIARI, Shenzhen Futian</span>
+              </div>
+              <div class="affiliation-row">
+                <span><sup>3</sup>School of Automation, Southeast University</span>
+                <span><sup>4</sup>Advanced Ocean Institute of Southeast University, Nantong</span>
+              </div>
+              <span class="corresponding-author"><sup>*</sup>Corresponding author</span>
+            </div>
+          </div>
+          <div class="hero-actions" aria-label="Project resources">
+            <a class="resource-button" href="https://arxiv.org/abs/2608.28020" target="_blank" rel="noopener"><i class="ai ai-arxiv" aria-hidden="true"></i>arXiv</a>
+            <a class="resource-button" href="https://github.com/bilityniu/3D-USE" target="_blank" rel="noopener"><i class="fa fa-github" aria-hidden="true"></i>Code</a>
+            <a class="resource-button" href="#citation"><i class="fa fa-quote-left" aria-hidden="true"></i>BibTeX</a>
+          </div>
+
+          <div class="hero-tldr" aria-label="Project summary">
+            <div class="hero-tldr-copy">
+              <span class="hero-tldr-label"><span class="ui-emoji tldr-emoji" aria-hidden="true">💡</span>TL;DR</span>
+              <h2>We introduce 3D-USE, which shifts the underwater enhancement objective from physical radiance inversion to scene-level appearance learning. Without paired enhanced 3D supervision, it transfers 2D UIE knowledge into a persistent, view-consistent 3D scene.</h2>
+            </div>
+            <div class="hero-tldr-flow" aria-label="From image-level transitions to scene-level enhancement">
+              <div class="hero-tldr-equation"><span>2D</span><i aria-hidden="true">→</i><strong>3D</strong></div>
+              <p>via Appearance Transition Consensus</p>
+            </div>
+          </div>
+
+          <div class="section-heading motivation-heading" id="motivation">
+            <span class="section-index">00</span>
+            <div>
+              <p class="section-eyebrow">Motivation</p>
+              <h2>Why view-wise enhancement cannot define a consistent 3D scene.</h2>
+            </div>
+          </div>
+
+          <div class="teaser-composition" aria-label="Motivation and overview of 3D-USE">
+            <figure class="teaser-figure">
+              <img src="media/figures/teaser_old.png" width="1000" height="509" alt="Limitations of physical inversion, image pre-processing, and direct 3D supervision">
+              <figcaption>
+                <strong>Why scene-level enhancement is challenging.</strong> Degraded multi-view images do not uniquely determine a desired enhanced 3D appearance: physical inversion is under-constrained, image-wise enhancement is inconsistent across views, and paired enhanced 3D data are unavailable.
+                <ul class="teaser-notes">
+                  <li><b>(a) Physical inversion.</b> Different scene-radiance and water-medium decompositions can reproduce the captured views but leave medium-dependent artifacts in the recovered appearance.</li>
+                  <li><b>(b) Image-based pre-processing.</b> Independently enhanced views introduce incompatible color and contrast cues as conflicting RGB supervision for one shared 3D scene.</li>
+                  <li><b>(c) Direct 3D supervision.</b> Although conceptually ideal, it requires paired enhanced 3D ground truth that is unavailable for real underwater scenes.</li>
+                </ul>
+              </figcaption>
+            </figure>
+            <figure class="teaser-figure">
+              <img src="media/figures/teaser_ours.png" width="1000" height="263" alt="3D-USE transfers a paired 2D transition prior into a consistent enhanced 3D scene">
+              <figcaption>
+                <strong>3D-USE learns a scene-consistent appearance transition.</strong>
+                <ul class="teaser-notes">
+                  <li><b>(d) Scene-level appearance learning.</b> 3D-USE learns global and local transition priors from external paired 2D data, reaches consensus across captured views, and embeds the resulting object and medium appearance in the 3D scene for persistent enhanced rendering.</li>
+                </ul>
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="overview">
+        <div class="page-shell">
+          <div class="section-heading">
+            <span class="section-index">01</span>
+            <div>
+              <p class="section-eyebrow">Overview</p>
+              <h2>Underwater enhancement should persist across viewpoints.</h2>
+            </div>
+          </div>
+
+          <div class="overview-layout">
+            <div class="abstract-copy">
+              <h3>Abstract</h3>
+              <p>Underwater 3D reconstruction faithfully reproduces the color shifts and visibility loss of captured views, while physical inversion may leave estimation errors in the recovered scene appearance. We formulate Underwater Scene-level Enhancement (USE) as learning a persistent, visibility-enhanced 3D scene representation from degraded multi-view underwater observations, enabling consistent enhanced rendering. Realizing USE requires both a reliable scene representation for enhancement and a consistent enhancement target without paired enhanced 3D data. Therefore, we present 3D-USE, a two-stage framework. First, MediumRBF establishes a medium-aware Gaussian scene by representing water effects with shared radial-basis anchors and explicitly decomposing object and medium contributions. Based on this fixed scene representation, Appearance Transition Consensus (ATC) transfers paired 2D UIE knowledge into scene-global and Gaussian-local targets, avoiding direct supervision from inconsistent enhanced views. An Underwater Bilateral Appearance Field (U-BAF) then realizes these targets in Gaussian radiance and medium appearance. The scene directly renders enhanced novel views without a 2D UIE model at inference. Experiments on real underwater scenes show improved visibility and cross-view consistency while preserving reconstruction quality.</p>
+            </div>
+          </div>
+
+          <div class="contribution-grid">
+            <article class="contribution-card">
+              <div class="contribution-mark"><span>01</span><i class="ui-emoji" aria-hidden="true">🧊</i></div>
+              <h3>Enhancement lives in 3D</h3>
+              <p>A persistent enhanced Gaussian scene replaces independent post-processing of rendered views.</p>
+            </article>
+            <article class="contribution-card">
+              <div class="contribution-mark"><span>02</span><i class="ui-emoji" aria-hidden="true">🌊</i></div>
+              <h3>Medium-aware reconstruction</h3>
+              <p>MediumRBF separates object appearance from water-induced effects over shared scene geometry.</p>
+            </article>
+            <article class="contribution-card">
+              <div class="contribution-mark"><span>03</span><i class="ui-emoji" aria-hidden="true">🔄</i></div>
+              <h3>Transition consensus</h3>
+              <p>ATC consolidates 2D enhancement knowledge into scene-global and Gaussian-local guidance.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-tinted" id="method">
+        <div class="page-shell">
+          <div class="section-heading">
+            <span class="section-index">02</span>
+            <div>
+              <p class="section-eyebrow">Method</p>
+              <h2>A two-stage path from <span class="keep-together">reconstruction to enhancement.</span></h2>
+            </div>
+          </div>
+
+          <figure class="asset-frame pipeline-frame" data-asset-frame>
+            <img src="media/figures/pipeline.png" width="1000" height="341" alt="Overview of the 3D-USE pipeline" data-asset-image>
+            <div class="asset-slot" data-asset-placeholder>
+              <div class="slot-grid"></div>
+              <div class="slot-copy">
+                <span class="slot-kicker">Method overview</span>
+                <strong>Reserved for the final pipeline PNG</strong>
+                <small>Save as media/figures/pipeline.png</small>
+              </div>
+            </div>
+          </figure>
+
+          <div class="stage-grid">
+            <article>
+              <span class="stage-badge"><span class="ui-emoji stage-emoji" aria-hidden="true">🌊</span>Stage 1</span>
+              <h3>Medium-aware reconstruction</h3>
+              <p>MediumRBF models water-induced effects through shared radial-basis anchors, establishing explicit object and medium components over reliable Gaussian geometry.</p>
+            </article>
+            <article>
+              <span class="stage-badge stage-badge-warm"><span class="ui-emoji stage-emoji" aria-hidden="true">✨</span>Stage 2</span>
+              <h3>Scene-level appearance enhancement</h3>
+              <p>ATC forms fixed scene-global and Gaussian-local targets. U-BAF realizes their consensus in object and medium appearance before physics-based rasterization.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="results">
+        <div class="page-shell">
+          <div class="section-heading results-heading">
+            <span class="section-index">03</span>
+            <div>
+              <p class="section-eyebrow">Results</p>
+              <h2>Compare reconstruction fidelity and enhanced appearance.</h2>
+              <p class="section-intro">Qualitative videos first show reconstruction and enhancement along matched camera paths, followed by quantitative comparisons on the evaluation benchmarks.</p>
+            </div>
+          </div>
+
+          <div class="results-subsection-heading results-quantitative-heading">
+            <p class="section-eyebrow">Quantitative Comparison</p>
+            <h3>Reconstruction and enhancement benchmarks</h3>
+            <p>Results are reported on held-out views, with scene-macro averaging for the multi-scene benchmarks.</p>
+          </div>
+
+          <div class="results-subsection-heading results-qualitative-heading">
+            <p class="section-eyebrow">Qualitative Comparison</p>
+            <h3>Matched-view reconstruction and enhancement</h3>
+            <p>Use the synchronized controls to inspect geometry, fine texture, color correction, and visibility.</p>
+          </div>
+
+          <section class="result-block result-block-enhancement" aria-labelledby="enhancement-results-title">
+            <div class="result-block-heading">
+              <p class="section-eyebrow">Enhancement Quality</p>
+              <h3 id="enhancement-results-title">Scene-level enhancement across SeaThru-4 and D3</h3>
+              <p>Two synchronized videos show the complete frame for judging color correction, visibility, and spatial uniformity.</p>
+            </div>
+
+            <div class="enhancement-card" id="enhancement-comparison">
+              <div class="comparison-toolbar">
+                <div class="toolbar-group">
+                  <span class="toolbar-label">Scene</span>
+                  <div class="scene-pills" role="group" aria-label="Enhancement scene">
+                    <button class="active" data-enh-scene="iui3" type="button">IUI3-RedSea</button>
+                    <button data-enh-scene="curasao" type="button">Curasao</button>
+                    <button data-enh-scene="japanese" type="button">Japanese Gardens</button>
+                    <button data-enh-scene="panama" type="button">Panama</button>
+                    <button data-enh-scene="d3" type="button">D3</button>
+                  </div>
+                </div>
+                <div class="toolbar-group toolbar-methods">
+                  <span class="toolbar-label">Compare against</span>
+                  <div class="method-pills" role="group" aria-label="Enhancement baseline method">
+                    <button class="active" data-enh-method="stage1" type="button">Stage 1</button>
+                    <button data-enh-method="watersplatting" type="button">WaterSplatting</button>
+                    <button data-enh-method="seasplat" type="button">SeaSplat</button>
+                    <button data-enh-method="marinestd" type="button">MarineSTD-GS</button>
+                    <button data-enh-method="plenodium" type="button">Plenodium</button>
+                    <button data-enh-method="3duir" type="button">3D-UIR</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="video-pair">
+                <article class="video-card">
+                  <div class="video-card-head"><strong data-enh-baseline-label>Stage 1</strong><span data-enh-scene-label>IUI3-RedSea</span></div>
+                  <div class="video-card-media">
+                    <video data-enh-video="left" loop muted playsinline preload="metadata"></video>
+                    <div class="media-placeholder" data-enh-placeholder="left"><span>Video pending</span><strong data-enh-baseline-label>Stage 1</strong></div>
+                  </div>
+                </article>
+                <article class="video-card is-ours">
+                  <div class="video-card-head"><strong>3D-USE (Ours)</strong><span data-enh-scene-label>IUI3-RedSea</span></div>
+                  <div class="video-card-media">
+                    <video data-enh-video="right" loop muted playsinline preload="metadata"></video>
+                    <div class="media-placeholder" data-enh-placeholder="right"><span>Video pending</span><strong>3D-USE (Ours)</strong></div>
+                  </div>
+                </article>
+              </div>
+
+              <div class="scene-carousel-controls" aria-label="Enhancement scene navigation">
+                <button class="scene-arrow" data-enh-scene-prev type="button" aria-label="Previous enhancement scene">‹</button>
+                <div class="scene-dots" role="group" aria-label="Choose enhancement scene">
+                  <button class="scene-dot active" data-enh-scene-dot="iui3" type="button" aria-label="IUI3-RedSea" aria-current="true"></button>
+                  <button class="scene-dot" data-enh-scene-dot="curasao" type="button" aria-label="Curasao"></button>
+                  <button class="scene-dot" data-enh-scene-dot="japanese" type="button" aria-label="Japanese Gardens"></button>
+                  <button class="scene-dot" data-enh-scene-dot="panama" type="button" aria-label="Panama"></button>
+                  <button class="scene-dot" data-enh-scene-dot="d3" type="button" aria-label="D3"></button>
+                </div>
+                <button class="scene-arrow" data-enh-scene-next type="button" aria-label="Next enhancement scene">›</button>
+              </div>
+
+              <div class="playback-bar">
+                <div class="playback-actions">
+                  <button type="button" data-enh-play>Play</button>
+                  <button type="button" data-enh-restart>Restart</button>
+                </div>
+                <span class="sync-note">Synchronized playback</span>
+              </div>
+            </div>
+
+            <div class="quantitative-panel">
+              <div class="quantitative-heading">
+                <div>
+                  <p class="section-eyebrow">Quantitative enhancement</p>
+                  <h4>Enhanced novel-view quality and consistency</h4>
+                </div>
+                <p>Higher is better, except wLPIPS.</p>
+              </div>
+              <div class="table-scroll" role="region" aria-label="Quantitative enhancement results" tabindex="0">
+                <table class="metric-table enhancement-table">
+                  <thead>
+                    <tr>
+                      <th rowspan="2" scope="col">Method</th>
+                      <th colspan="3" scope="colgroup">SeaThru-4</th>
+                      <th colspan="3" scope="colgroup">DRUVA-20</th>
+                      <th colspan="3" scope="colgroup">D3</th>
+                      <th colspan="3" scope="colgroup">D5</th>
+                      <th rowspan="2" scope="col">wLPIPS<br><span>↓</span></th>
+                    </tr>
+                    <tr>
+                      <th scope="col">UCIQE</th><th scope="col">URanker</th><th scope="col">MUSIQ</th>
+                      <th scope="col">UCIQE</th><th scope="col">URanker</th><th scope="col">MUSIQ</th>
+                      <th scope="col">UCIQE</th><th scope="col">URanker</th><th scope="col">MUSIQ</th>
+                      <th scope="col">UCIQE</th><th scope="col">URanker</th><th scope="col">MUSIQ</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><th scope="row">WaterSplatting</th><td>0.5083</td><td>1.361</td><td><u>58.529</u></td><td>0.385</td><td>−0.856</td><td>33.193</td><td>0.470</td><td>0.541</td><td>58.833</td><td><u>0.499</u></td><td><u>0.690</u></td><td><u>55.568</u></td><td>0.173</td></tr>
+                    <tr><th scope="row">SeaSplat</th><td>0.5879</td><td>1.555</td><td>54.470</td><td>0.518</td><td>−0.186</td><td>28.252</td><td>0.504</td><td>1.007</td><td>58.251</td><td>0.442</td><td>−0.895</td><td>40.648</td><td>0.209</td></tr>
+                    <tr><th scope="row">Plenodium</th><td>0.5034</td><td>1.058</td><td>58.370</td><td>0.395</td><td>−0.792</td><td>34.786</td><td>0.483</td><td>0.705</td><td>60.158</td><td>0.443</td><td>0.033</td><td>52.456</td><td><u>0.158</u></td></tr>
+                    <tr><th scope="row">MarineSTD-GS</th><td>0.5219</td><td>0.918</td><td>55.890</td><td>0.447</td><td>−0.567</td><td><strong>39.070</strong></td><td>0.443</td><td>0.416</td><td>56.246</td><td>0.413</td><td>−0.117</td><td>54.424</td><td>0.216</td></tr>
+                    <tr><th scope="row">3D-UIR</th><td><strong>0.6087</strong></td><td><u>1.658</u></td><td>54.540</td><td><u>0.537</u></td><td><u>0.174</u></td><td>32.752</td><td><u>0.519</u></td><td><u>1.356</u></td><td><u>59.351</u></td><td>0.468</td><td>0.137</td><td>51.991</td><td>0.208</td></tr>
+                    <tr class="ours-row"><th scope="row">3D-USE (Ours)</th><td><u>0.6085</u></td><td><strong>1.679</strong></td><td><strong>59.881</strong></td><td><strong>0.575</strong></td><td><strong>0.456</strong></td><td><u>36.598</u></td><td><strong>0.543</strong></td><td><strong>2.034</strong></td><td><strong>62.993</strong></td><td><strong>0.513</strong></td><td><strong>1.027</strong></td><td><strong>58.324</strong></td><td><strong>0.147</strong></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="table-note">SeaThru-4 and DRUVA-20 are scene-macro averages; wLPIPS is averaged over all 26 scenes. Bold and underline denote best and second-best results.</p>
+            </div>
+          </section>
+
+          <section class="result-block result-block-reconstruction" aria-labelledby="reconstruction-results-title">
+            <div class="result-block-heading">
+              <p class="section-eyebrow">Reconstruction Quality</p>
+              <h3 id="reconstruction-results-title">Matched-view reconstruction and detail inspection</h3>
+              <p>Play the matched camera path to inspect structural stability, then move the detail region to examine boundaries and fine textures.</p>
+            </div>
+
+          <div class="comparison-card" id="reconstruction-comparison">
+            <div class="comparison-toolbar">
+              <div class="toolbar-group">
+                <span class="toolbar-label">Scene</span>
+                <div class="scene-pills" role="group" aria-label="Reconstruction scene">
+                  <button class="active" data-scene="iui3" type="button">IUI3-RedSea</button>
+                  <button data-scene="curasao" type="button">Curasao</button>
+                  <button data-scene="japanese" type="button">Japanese Gardens</button>
+                  <button data-scene="panama" type="button">Panama</button>
+                  <button data-scene="d3" type="button">D3</button>
+                </div>
+              </div>
+              <div class="toolbar-group toolbar-methods">
+                <span class="toolbar-label">Compare against</span>
+                <div class="method-pills" role="group" aria-label="Baseline method">
+                  <button class="active" data-method="3dgs" type="button">3DGS</button>
+                  <button data-method="watersplatting" type="button">WaterSplatting</button>
+                  <button data-method="seasplat" type="button">SeaSplat</button>
+                  <button data-method="marinestd" type="button">MarineSTD-GS</button>
+                  <button data-method="plenodium" type="button">Plenodium</button>
+                  <button data-method="3duir" type="button">3D-UIR</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="comparison-context">
+              <div><strong data-scene-label>IUI3-RedSea</strong><span data-scene-note></span></div>
+              <p>Play or drag horizontally to compare.</p>
+            </div>
+
+            <div class="comparison-stage" data-comparison-stage>
+              <div class="comparison-video comparison-video-right">
+                <video data-recon-video="right" muted playsinline preload="metadata" aria-label="3D-USE reconstruction video"></video>
+                <div class="media-placeholder" data-placeholder="right"><span>Video pending</span><strong>3D-USE (Ours)</strong></div>
+              </div>
+              <div class="comparison-overlay" data-comparison-overlay>
+                <div class="comparison-video comparison-video-left">
+                  <video data-recon-video="left" muted playsinline preload="metadata" aria-label="Baseline reconstruction video"></video>
+                  <div class="media-placeholder" data-placeholder="left"><span>Video pending</span><strong data-baseline-label>3DGS</strong></div>
+                </div>
+              </div>
+              <button class="comparison-divider" data-divider type="button" role="slider" aria-label="Comparison divider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"><span>↔</span></button>
+              <span class="video-corner-label video-corner-left" data-baseline-label>3DGS</span>
+              <span class="video-corner-label video-corner-right">3D-USE (Ours)</span>
+              <div class="detail-lens" data-detail-lens aria-label="Movable detail region"><span></span></div>
+            </div>
+
+            <div class="scene-carousel-controls" aria-label="Reconstruction scene navigation">
+              <button class="scene-arrow" data-scene-prev type="button" aria-label="Previous reconstruction scene">‹</button>
+              <div class="scene-dots" role="group" aria-label="Choose reconstruction scene">
+                <button class="scene-dot active" data-scene-dot="iui3" type="button" aria-label="IUI3-RedSea" aria-current="true"></button>
+                <button class="scene-dot" data-scene-dot="curasao" type="button" aria-label="Curasao"></button>
+                <button class="scene-dot" data-scene-dot="japanese" type="button" aria-label="Japanese Gardens"></button>
+                <button class="scene-dot" data-scene-dot="panama" type="button" aria-label="Panama"></button>
+                <button class="scene-dot" data-scene-dot="d3" type="button" aria-label="D3"></button>
+              </div>
+              <button class="scene-arrow" data-scene-next type="button" aria-label="Next reconstruction scene">›</button>
+            </div>
+
+            <div class="playback-bar">
+              <div class="playback-actions">
+                <button type="button" data-recon-play>Play</button>
+                <button type="button" data-recon-restart>Restart</button>
+              </div>
+              <label class="detail-toggle"><input data-detail-toggle type="checkbox" checked><span>Detail lens</span></label>
+              <label class="lens-size-control"><span>Region size</span><input data-lens-size type="range" min="12" max="42" value="24"></label>
+            </div>
+
+            <div class="detail-grid" data-detail-grid aria-label="Synchronized enlarged detail comparison">
+              <article class="detail-panel">
+                <div class="detail-panel-head"><span>Selected detail</span><strong data-baseline-label>3DGS</strong></div>
+                <div class="detail-crop"><video data-recon-video="left-zoom" muted playsinline preload="metadata" aria-label="Enlarged baseline reconstruction detail"></video><div class="crop-placeholder" data-crop-placeholder="left">Detail preview</div></div>
+              </article>
+              <article class="detail-panel is-ours">
+                <div class="detail-panel-head"><span>Selected detail</span><strong>3D-USE (Ours)</strong></div>
+                <div class="detail-crop"><video data-recon-video="right-zoom" muted playsinline preload="metadata" aria-label="Enlarged 3D-USE reconstruction detail"></video><div class="crop-placeholder" data-crop-placeholder="right">Detail preview</div></div>
+              </article>
+            </div>
+
+            <p class="media-note">All methods use matched viewpoints and their native underwater reconstruction outputs.</p>
+          </div>
+
+            <div class="quantitative-panel">
+              <div class="quantitative-heading">
+                <div>
+                  <p class="section-eyebrow">Quantitative reconstruction</p>
+                  <h4>Held-out reconstruction fidelity</h4>
+                </div>
+                <p>Higher is better, except LPIPS.</p>
+              </div>
+              <div class="table-scroll" role="region" aria-label="Quantitative reconstruction results" tabindex="0">
+                <table class="metric-table reconstruction-table">
+                  <thead>
+                    <tr>
+                      <th rowspan="2" scope="col">Method</th>
+                      <th colspan="3" scope="colgroup">SeaThru-4</th>
+                      <th colspan="3" scope="colgroup">DRUVA-20</th>
+                      <th colspan="3" scope="colgroup">D3</th>
+                      <th colspan="3" scope="colgroup">D5</th>
+                      <th rowspan="2" scope="col">FPS<br><span>↑</span></th>
+                    </tr>
+                    <tr>
+                      <th scope="col">PSNR</th><th scope="col">SSIM</th><th scope="col">LPIPS</th>
+                      <th scope="col">PSNR</th><th scope="col">SSIM</th><th scope="col">LPIPS</th>
+                      <th scope="col">PSNR</th><th scope="col">SSIM</th><th scope="col">LPIPS</th>
+                      <th scope="col">PSNR</th><th scope="col">SSIM</th><th scope="col">LPIPS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><th scope="row">WaterSplatting</th><td>29.340</td><td>0.919</td><td>0.129</td><td>27.007</td><td>0.864</td><td>0.357</td><td>27.380</td><td>0.776</td><td>0.253</td><td>29.113</td><td>0.817</td><td><u>0.313</u></td><td>99.78</td></tr>
+                    <tr><th scope="row">SeaSplat</th><td>27.146</td><td>0.878</td><td>0.184</td><td>22.866</td><td>0.828</td><td>0.388</td><td>27.885</td><td>0.785</td><td>0.282</td><td>27.113</td><td>0.806</td><td>0.382</td><td><u>100.77</u></td></tr>
+                    <tr><th scope="row">MarineSTD-GS</th><td>30.034</td><td>0.901</td><td>0.160</td><td>26.472</td><td>0.856</td><td>0.364</td><td><u>29.510</u></td><td>0.781</td><td>0.316</td><td><u>30.237</u></td><td>0.818</td><td>0.329</td><td>41.13</td></tr>
+                    <tr><th scope="row">Plenodium</th><td><u>30.331</u></td><td><u>0.922</u></td><td><u>0.125</u></td><td><u>27.413</u></td><td><u>0.866</u></td><td><strong>0.335</strong></td><td>28.686</td><td><u>0.803</u></td><td><u>0.218</u></td><td>29.088</td><td>0.817</td><td>0.314</td><td>91.60</td></tr>
+                    <tr><th scope="row">3D-UIR</th><td>28.260</td><td>0.889</td><td>0.179</td><td>25.432</td><td>0.820</td><td>0.354</td><td>28.098</td><td>0.830</td><td>0.283</td><td>28.973</td><td><u>0.823</u></td><td>0.324</td><td>42.74</td></tr>
+                    <tr class="ours-row"><th scope="row">3D-USE (Ours)</th><td><strong>30.369</strong></td><td><strong>0.924</strong></td><td><strong>0.124</strong></td><td><strong>27.495</strong></td><td><strong>0.867</strong></td><td><u>0.352</u></td><td><strong>29.759</strong></td><td><strong>0.858</strong></td><td><strong>0.183</strong></td><td><strong>31.400</strong></td><td><strong>0.908</strong></td><td><strong>0.235</strong></td><td><strong>105.36</strong></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="table-note">SeaThru-4 and DRUVA-20 are scene-macro averages. Bold and underline denote best and second-best results.</p>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="section section-tinted" id="citation">
+        <div class="page-shell citation-layout">
+          <div class="citation-heading">
+            <p class="section-eyebrow">Citation</p>
+            <h2>BibTeX</h2>
+          </div>
+          <div class="bibtex-wrap">
+            <button class="copy-bibtex" data-copy-bibtex type="button" aria-label="Copy BibTeX"><i class="fa fa-copy" aria-hidden="true"></i><span>Copy</span></button>
+            <pre class="bibtex"><code data-bibtex-code>@article{yuan2026three_duse,
+  title         = {3D-USE: From Image-Level to Scene-Level Underwater Enhancement},
+  author        = {Yuan, Jieyu and Zhang, Yuanlin and Li, Jihong and Guo, Chun-Le and Lu, Huimin and Li, Chongyi},
+  journal       = {arXiv preprint arXiv:2608.28020},
+  year          = {2026},
+  eprint        = {2608.28020},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CV},
+  url           = {https://arxiv.org/abs/2608.28020}
+}</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <section class="contact-section" id="contact">
+        <div class="page-shell contact-content">
+          <h2>Contact</h2>
+          <p>Feel free to contact us at <a href="mailto:jieyuyuan.cn@gmail.com">jieyuyuan.cn[AT]gmail.com</a> for any questions or collaborations.</p>
+        </div>
+      </section>
+    </main>
+
+    <button class="scroll-to-top" data-scroll-top type="button" aria-label="Back to top" title="Back to top"><span aria-hidden="true">↑</span></button>
+
+    <script src="static/js/video-comparison.js?v=5"></script>
+  </body>
+</html>
