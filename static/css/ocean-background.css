@@ -1,0 +1,65 @@
+/* Soft underwater backdrop; opacity applies only to the decorative layer. */
+:root {
+  --ocean-backdrop-wash: 0.78;
+}
+
+body {
+  isolation: isolate;
+  background: #f2f9fd;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(
+      rgba(248, 252, 255, var(--ocean-backdrop-wash)),
+      rgba(248, 252, 255, var(--ocean-backdrop-wash))
+    ),
+    url("../../media/figures/ocean-background.webp");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.hero {
+  background: transparent;
+}
+
+.hero-glow {
+  display: none;
+}
+
+.section-tinted {
+  background: rgba(242, 247, 252, 0.50);
+}
+
+.site-nav {
+  background: rgba(248, 252, 255, 0.88);
+}
+
+.abstract-copy {
+  padding: 26px 30px;
+  border: 1px solid rgba(215, 229, 240, 0.8);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.84);
+}
+
+@media (max-width: 640px) {
+  :root {
+    --ocean-backdrop-wash: 0.84;
+  }
+
+  .abstract-copy {
+    padding: 20px;
+  }
+}
+
+@media print {
+  body::before {
+    display: none;
+  }
+}

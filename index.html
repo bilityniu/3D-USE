@@ -6,22 +6,20 @@
     <meta name="description" content="3D-USE learns a persistent visibility-enhanced underwater Gaussian scene for consistent novel-view rendering.">
     <meta property="og:title" content="3D-USE: From Image-Level to Scene-Level Underwater Enhancement">
     <meta property="og:description" content="Learning a persistent, visibility-enhanced underwater Gaussian scene for consistent novel-view rendering.">
-    <meta property="og:image" content="media/figures/teaser.png">
+    <meta property="og:image" content="media/figures/teaser_ours.png">
     <meta name="twitter:card" content="summary_large_image">
     <title>3D-USE: From Image-Level to Scene-Level Underwater Enhancement</title>
     <link rel="icon" href="media/figures/logo.png" type="image/png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="static/css/style.css?v=24">
+    <link rel="stylesheet" href="static/css/style.css?v=33">
+    <link rel="stylesheet" href="static/css/ocean-background.css?v=1">
   </head>
   <body>
     <nav class="site-nav" aria-label="Primary navigation">
       <div class="nav-inner">
         <a class="brand" href="#top" aria-label="3D-USE home">
-          <img class="brand-logo" src="media/figures/logo.png" alt=""><span>3D-USE</span>
+          <img class="brand-wordmark" src="media/figures/brand-wordmark-centered.webp" alt="3D-USE">
         </a>
         <div class="nav-links">
           <a href="#motivation">Motivation</a>
@@ -76,7 +74,7 @@
               <h2>We introduce 3D-USE, which shifts the underwater enhancement objective from physical radiance inversion to scene-level appearance learning. Without paired enhanced 3D supervision, it transfers 2D UIE knowledge into a persistent, view-consistent 3D scene.</h2>
             </div>
             <div class="hero-tldr-flow" aria-label="From image-level transitions to scene-level enhancement">
-              <div class="hero-tldr-equation"><span>2D</span><i aria-hidden="true">→</i><strong>3D</strong></div>
+              <div class="hero-tldr-equation"><span>2D</span><svg class="transition-arrow" viewBox="0 0 64 30" fill="none" aria-hidden="true"><defs><linearGradient id="transition-arrow-blue" x1="2" y1="15" x2="61" y2="15" gradientUnits="userSpaceOnUse"><stop stop-color="#a9d7ee" stop-opacity=".45"/><stop offset=".55" stop-color="#75b5de"/><stop offset="1" stop-color="#3a81bd"/></linearGradient><linearGradient id="transition-arrow-sheen"><stop stop-color="white" stop-opacity="0"/><stop offset=".5" stop-color="white" stop-opacity=".75"/><stop offset="1" stop-color="white" stop-opacity="0"/></linearGradient><path id="transition-arrow-shape" d="M4 12H42V5.5Q42 3.5 44 5L60 13.5Q62 15 60 16.5L44 25Q42 26.5 42 24.5V18H4Q1 18 1 15Q1 12 4 12Z"/><clipPath id="transition-arrow-clip"><use href="#transition-arrow-shape"/></clipPath></defs><use href="#transition-arrow-shape" fill="url(#transition-arrow-blue)"/><g clip-path="url(#transition-arrow-clip)"><path class="transition-arrow-sheen" d="M-20 0H-8L2 30H-10Z" fill="url(#transition-arrow-sheen)"/></g></svg><strong>3D</strong></div>
               <p>via Appearance Transition Consensus</p>
             </div>
           </div>
@@ -93,11 +91,11 @@
             <figure class="teaser-figure">
               <img src="media/figures/teaser_old.png" width="1000" height="509" alt="Limitations of physical inversion, image pre-processing, and direct 3D supervision">
               <figcaption>
-                <strong>Why scene-level enhancement is challenging.</strong> Degraded multi-view images do not uniquely determine a desired enhanced 3D appearance: physical inversion is under-constrained, image-wise enhancement is inconsistent across views, and paired enhanced 3D data are unavailable.
+                <strong>Why scene-level enhancement is challenging.</strong> Degraded multi-view images do not uniquely determine a desired enhanced 3D appearance: physical inversion is under-constrained, image-wise enhancement is inconsistent across views, and paired enhanced 3D data are difficult to obtain.
                 <ul class="teaser-notes">
                   <li><b>(a) Physical inversion.</b> Different scene-radiance and water-medium decompositions can reproduce the captured views but leave medium-dependent artifacts in the recovered appearance.</li>
                   <li><b>(b) Image-based pre-processing.</b> Independently enhanced views introduce incompatible color and contrast cues as conflicting RGB supervision for one shared 3D scene.</li>
-                  <li><b>(c) Direct 3D supervision.</b> Although conceptually ideal, it requires paired enhanced 3D ground truth that is unavailable for real underwater scenes.</li>
+                  <li><b>(c) Direct 3D supervision.</b> Although conceptually ideal, it requires paired enhanced 3D ground truth that is difficult to obtain in real underwater scenes.</li>
                 </ul>
               </figcaption>
             </figure>
@@ -127,7 +125,7 @@
           <div class="overview-layout">
             <div class="abstract-copy">
               <h3>Abstract</h3>
-              <p>Underwater 3D reconstruction faithfully reproduces the color shifts and visibility loss of captured views, while physical inversion may leave estimation errors in the recovered scene appearance. We formulate Underwater Scene-level Enhancement (USE) as learning a persistent, visibility-enhanced 3D scene representation from degraded multi-view underwater observations, enabling consistent enhanced rendering. Realizing USE requires both a reliable scene representation for enhancement and a consistent enhancement target without paired enhanced 3D data. Therefore, we present 3D-USE, a two-stage framework. First, MediumRBF establishes a medium-aware Gaussian scene by representing water effects with shared radial-basis anchors and explicitly decomposing object and medium contributions. Based on this fixed scene representation, Appearance Transition Consensus (ATC) transfers paired 2D UIE knowledge into scene-global and Gaussian-local targets, avoiding direct supervision from inconsistent enhanced views. An Underwater Bilateral Appearance Field (U-BAF) then realizes these targets in Gaussian radiance and medium appearance. The scene directly renders enhanced novel views without a 2D UIE model at inference. Experiments on real underwater scenes show improved visibility and cross-view consistency while preserving reconstruction quality.</p>
+              <p>Underwater scene reconstruction from degraded views can preserve visual degradation. Since paired enhanced 3D references are hard to obtain in real ocean scenes, underwater 3D methods largely rely on physics-based restoration. However, separating object radiance from medium effects is ill-posed and may leave residual artifacts. In contrast, we formulate underwater scene enhancement as learning the desired appearance of the scene and propose a two-stage framework called 3D-USE. Stage 1 builds a medium-aware Gaussian scene with MediumRBF, sharing medium estimates across nearby views and establishing stable geometry and visibility. Using a prior learned from external 2D enhancement pairs, Stage 2 applies Appearance Transition Consensus (ATC) to calibrate and aggregate view-wise appearance changes, defining the desired scene-level appearance transformation. Finally, an Underwater Bilateral Appearance Field (U-BAF) jointly adjusts object radiance and medium appearance to produce coherent enhanced appearance across viewpoints. Experiments show that 3D-USE improves novel-view enhancement and cross-view consistency while maintaining competitive reconstruction quality.</p>
             </div>
           </div>
 
@@ -162,7 +160,7 @@
           </div>
 
           <figure class="asset-frame pipeline-frame" data-asset-frame>
-            <img src="media/figures/pipeline.png" width="1000" height="341" alt="Overview of the 3D-USE pipeline" data-asset-image>
+            <img src="media/figures/pipeline.png" width="1920" height="639" alt="Overview of the 3D-USE pipeline" data-asset-image>
             <div class="asset-slot" data-asset-placeholder>
               <div class="slot-grid"></div>
               <div class="slot-copy">
@@ -176,13 +174,13 @@
           <div class="stage-grid">
             <article>
               <span class="stage-badge"><span class="ui-emoji stage-emoji" aria-hidden="true">🌊</span>Stage 1</span>
-              <h3>Medium-aware reconstruction</h3>
+              <h3>Medium-aware scene modeling</h3>
               <p>MediumRBF models water-induced effects through shared radial-basis anchors, establishing explicit object and medium components over reliable Gaussian geometry.</p>
             </article>
             <article>
               <span class="stage-badge stage-badge-warm"><span class="ui-emoji stage-emoji" aria-hidden="true">✨</span>Stage 2</span>
               <h3>Scene-level appearance enhancement</h3>
-              <p>ATC forms fixed scene-global and Gaussian-local targets. U-BAF realizes their consensus in object and medium appearance before physics-based rasterization.</p>
+              <p>Using a frozen prior learned from paired 2D data, ATC consolidates calibrated proposals into scene-global and Gaussian-local targets. On the fixed reconstruction, U-BAF jointly adjusts object radiance and medium appearance to match these targets through underwater rendering.</p>
             </article>
           </div>
         </div>
@@ -298,7 +296,7 @@
                       <th colspan="3" scope="colgroup">DRUVA-20</th>
                       <th colspan="3" scope="colgroup">D3</th>
                       <th colspan="3" scope="colgroup">D5</th>
-                      <th rowspan="2" scope="col">wLPIPS<br><span>↓</span></th>
+                      <th class="metric-summary" rowspan="2" scope="col">wLPIPS ↓</th>
                     </tr>
                     <tr>
                       <th scope="col">UCIQE</th><th scope="col">URanker</th><th scope="col">MUSIQ</th>
@@ -308,12 +306,12 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr><th scope="row">WaterSplatting</th><td>0.5083</td><td>1.361</td><td><u>58.529</u></td><td>0.385</td><td>−0.856</td><td>33.193</td><td>0.470</td><td>0.541</td><td>58.833</td><td><u>0.499</u></td><td><u>0.690</u></td><td><u>55.568</u></td><td>0.173</td></tr>
-                    <tr><th scope="row">SeaSplat</th><td>0.5879</td><td>1.555</td><td>54.470</td><td>0.518</td><td>−0.186</td><td>28.252</td><td>0.504</td><td>1.007</td><td>58.251</td><td>0.442</td><td>−0.895</td><td>40.648</td><td>0.209</td></tr>
-                    <tr><th scope="row">Plenodium</th><td>0.5034</td><td>1.058</td><td>58.370</td><td>0.395</td><td>−0.792</td><td>34.786</td><td>0.483</td><td>0.705</td><td>60.158</td><td>0.443</td><td>0.033</td><td>52.456</td><td><u>0.158</u></td></tr>
-                    <tr><th scope="row">MarineSTD-GS</th><td>0.5219</td><td>0.918</td><td>55.890</td><td>0.447</td><td>−0.567</td><td><strong>39.070</strong></td><td>0.443</td><td>0.416</td><td>56.246</td><td>0.413</td><td>−0.117</td><td>54.424</td><td>0.216</td></tr>
-                    <tr><th scope="row">3D-UIR</th><td><strong>0.6087</strong></td><td><u>1.658</u></td><td>54.540</td><td><u>0.537</u></td><td><u>0.174</u></td><td>32.752</td><td><u>0.519</u></td><td><u>1.356</u></td><td><u>59.351</u></td><td>0.468</td><td>0.137</td><td>51.991</td><td>0.208</td></tr>
-                    <tr class="ours-row"><th scope="row">3D-USE (Ours)</th><td><u>0.6085</u></td><td><strong>1.679</strong></td><td><strong>59.881</strong></td><td><strong>0.575</strong></td><td><strong>0.456</strong></td><td><u>36.598</u></td><td><strong>0.543</strong></td><td><strong>2.034</strong></td><td><strong>62.993</strong></td><td><strong>0.513</strong></td><td><strong>1.027</strong></td><td><strong>58.324</strong></td><td><strong>0.147</strong></td></tr>
+                    <tr><th scope="row">WaterSplatting</th><td>0.508</td><td>1.361</td><td><u>58.529</u></td><td>0.385</td><td>−0.856</td><td>33.193</td><td>0.470</td><td>0.541</td><td>58.833</td><td><u>0.499</u></td><td><u>0.690</u></td><td><u>55.568</u></td><td>0.1639</td></tr>
+                    <tr><th scope="row">SeaSplat</th><td>0.588</td><td>1.555</td><td>54.470</td><td>0.518</td><td>−0.186</td><td>28.252</td><td>0.504</td><td>1.007</td><td>58.251</td><td>0.442</td><td>−0.895</td><td>40.648</td><td>0.2211</td></tr>
+                    <tr><th scope="row">Plenodium</th><td>0.503</td><td>1.058</td><td>58.370</td><td>0.395</td><td>−0.792</td><td>34.786</td><td>0.483</td><td>0.705</td><td><u>60.158</u></td><td>0.443</td><td>0.033</td><td>52.456</td><td><u>0.1481</u></td></tr>
+                    <tr><th scope="row">MarineSTD-GS</th><td>0.522</td><td>0.918</td><td>55.890</td><td>0.447</td><td>−0.567</td><td><strong>39.070</strong></td><td>0.443</td><td>0.416</td><td>56.246</td><td>0.413</td><td>−0.117</td><td>54.424</td><td>0.2100</td></tr>
+                    <tr><th scope="row">3D-UIR</th><td><u>0.609</u></td><td><u>1.658</u></td><td>54.540</td><td><u>0.537</u></td><td><u>0.174</u></td><td>32.752</td><td><u>0.519</u></td><td><u>1.356</u></td><td>59.351</td><td>0.468</td><td>0.137</td><td>51.991</td><td>0.2228</td></tr>
+                    <tr class="ours-row"><th scope="row">3D-USE (Ours)</th><td><strong>0.609</strong></td><td><strong>1.679</strong></td><td><strong>59.881</strong></td><td><strong>0.575</strong></td><td><strong>0.456</strong></td><td><u>36.598</u></td><td><strong>0.543</strong></td><td><strong>2.034</strong></td><td><strong>62.993</strong></td><td><strong>0.513</strong></td><td><strong>1.027</strong></td><td><strong>58.324</strong></td><td><strong>0.1381</strong></td></tr>
                   </tbody>
                 </table>
               </div>
@@ -427,7 +425,7 @@
                       <th colspan="3" scope="colgroup">DRUVA-20</th>
                       <th colspan="3" scope="colgroup">D3</th>
                       <th colspan="3" scope="colgroup">D5</th>
-                      <th rowspan="2" scope="col">FPS<br><span>↑</span></th>
+                      <th class="metric-summary" rowspan="2" scope="col">FPS ↑</th>
                     </tr>
                     <tr>
                       <th scope="col">PSNR</th><th scope="col">SSIM</th><th scope="col">LPIPS</th>
@@ -440,13 +438,13 @@
                     <tr><th scope="row">WaterSplatting</th><td>29.340</td><td>0.919</td><td>0.129</td><td>27.007</td><td>0.864</td><td>0.357</td><td>27.380</td><td>0.776</td><td>0.253</td><td>29.113</td><td>0.817</td><td><u>0.313</u></td><td>99.78</td></tr>
                     <tr><th scope="row">SeaSplat</th><td>27.146</td><td>0.878</td><td>0.184</td><td>22.866</td><td>0.828</td><td>0.388</td><td>27.885</td><td>0.785</td><td>0.282</td><td>27.113</td><td>0.806</td><td>0.382</td><td><u>100.77</u></td></tr>
                     <tr><th scope="row">MarineSTD-GS</th><td>30.034</td><td>0.901</td><td>0.160</td><td>26.472</td><td>0.856</td><td>0.364</td><td><u>29.510</u></td><td>0.781</td><td>0.316</td><td><u>30.237</u></td><td>0.818</td><td>0.329</td><td>41.13</td></tr>
-                    <tr><th scope="row">Plenodium</th><td><u>30.331</u></td><td><u>0.922</u></td><td><u>0.125</u></td><td><u>27.413</u></td><td><u>0.866</u></td><td><strong>0.335</strong></td><td>28.686</td><td><u>0.803</u></td><td><u>0.218</u></td><td>29.088</td><td>0.817</td><td>0.314</td><td>91.60</td></tr>
-                    <tr><th scope="row">3D-UIR</th><td>28.260</td><td>0.889</td><td>0.179</td><td>25.432</td><td>0.820</td><td>0.354</td><td>28.098</td><td>0.830</td><td>0.283</td><td>28.973</td><td><u>0.823</u></td><td>0.324</td><td>42.74</td></tr>
+                    <tr><th scope="row">Plenodium</th><td><u>30.331</u></td><td><u>0.922</u></td><td><u>0.125</u></td><td><u>27.413</u></td><td><u>0.866</u></td><td><strong>0.335</strong></td><td>28.686</td><td>0.803</td><td><u>0.218</u></td><td>29.088</td><td>0.817</td><td>0.314</td><td>91.60</td></tr>
+                    <tr><th scope="row">3D-UIR</th><td>28.260</td><td>0.889</td><td>0.179</td><td>25.432</td><td>0.820</td><td>0.354</td><td>28.098</td><td><u>0.830</u></td><td>0.283</td><td>28.973</td><td><u>0.823</u></td><td>0.324</td><td>42.74</td></tr>
                     <tr class="ours-row"><th scope="row">3D-USE (Ours)</th><td><strong>30.369</strong></td><td><strong>0.924</strong></td><td><strong>0.124</strong></td><td><strong>27.495</strong></td><td><strong>0.867</strong></td><td><u>0.352</u></td><td><strong>29.759</strong></td><td><strong>0.858</strong></td><td><strong>0.183</strong></td><td><strong>31.400</strong></td><td><strong>0.908</strong></td><td><strong>0.235</strong></td><td><strong>105.36</strong></td></tr>
                   </tbody>
                 </table>
               </div>
-              <p class="table-note">SeaThru-4 and DRUVA-20 are scene-macro averages. Bold and underline denote best and second-best results.</p>
+              <p class="table-note">SeaThru-4 and DRUVA-20 are scene-macro averages; FPS is averaged across scenes at 1400 × 933. Bold and underline denote best and second-best results.</p>
             </div>
           </section>
         </div>
@@ -462,7 +460,7 @@
             <button class="copy-bibtex" data-copy-bibtex type="button" aria-label="Copy BibTeX"><i class="fa fa-copy" aria-hidden="true"></i><span>Copy</span></button>
             <pre class="bibtex"><code data-bibtex-code>@article{yuan2026three_duse,
   title         = {3D-USE: From Image-Level to Scene-Level Underwater Enhancement},
-  author        = {Yuan, Jieyu and Zhang, Yuanlin and Li, Jihong and Guo, Chun-Le and Lu, Huimin and Li, Chongyi},
+  author        = {Yuan, Jieyu and Zhang, Yuanlin and Li, Jihong and Guo, Chunle and Lu, Huimin and Li, Chongyi},
   journal       = {arXiv preprint arXiv:2608.28020},
   year          = {2026},
   eprint        = {2608.28020},
@@ -482,7 +480,7 @@
       </section>
     </main>
 
-    <button class="scroll-to-top" data-scroll-top type="button" aria-label="Back to top" title="Back to top"><span aria-hidden="true">↑</span></button>
+    <button class="scroll-to-top" data-scroll-top type="button" aria-label="Back to top" title="Back to top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
 
     <script src="static/js/video-comparison.js?v=5"></script>
   </body>

@@ -26,4 +26,6 @@ media/{reconstruction,enhancement}/
     └── ...same filenames...
 ```
 
+Enhancement additionally uses `stage1.mp4` for the unenhanced reference, and reconstruction uses `3dgs.mp4` for Vanilla 3DGS.
+
 Keep every video for a scene at the same resolution, frame rate, frame count, and camera path so paired playback stays synchronized.
