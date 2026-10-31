@@ -38,8 +38,8 @@
 
 3D-USE aims to reconstruct an underwater scene with improved visibility and consistent appearance across novel viewpoints. Standard reconstruction preserves underwater degradation, while independent 2D enhancement can introduce view-dependent corrections. Our two-stage framework first builds a medium-aware Gaussian scene and then transfers paired 2D enhancement knowledge into a persistent 3D appearance representation, enabling enhanced novel-view rendering without a 2D UIE model at inference.
 
-- **Stage 1:** Medium-aware Gaussian reconstruction with MediumRBF.
-- **Stage 2:** ATC-guided scene enhancement stored in U-BAF.
+- **Stage 1:** Medium-aware scene modeling with MediumRBF.
+- **Stage 2:** ATC-guided scene-level appearance enhancement stored in U-BAF.
 - **Inference:** Enhanced novel-view rendering without a 2D UIE model.
 
 <p align="center">
@@ -135,7 +135,7 @@ ns-render camera-path \
 ```bibtex
 @article{yuan2026three_duse,
   title={3D-USE: From Image-Level to Scene-Level Underwater Enhancement},
-  author={Yuan, Jieyu and Zhang, Yuanlin and Li, Jihong and Guo, Chun-Le and Lu, Huimin and Li, Chongyi},
+  author={Yuan, Jieyu and Zhang, Yuanlin and Li, Jihong and Guo, Chunle and Lu, Huimin and Li, Chongyi},
   journal={arXiv preprint arXiv:2608.28020},
   year={2026},
   eprint={2608.28020},
